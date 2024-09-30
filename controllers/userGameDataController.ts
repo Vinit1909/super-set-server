@@ -7,13 +7,27 @@ export const getUserGameDataByGameName = async (
   res: Response
 ) => {
   const gameName = req.params.game_name; // Replace all hyphens with underscores
-  const token = req.headers.authorization; // Assuming the token is sent as "Bearer <token>"
 
-  if (!token) {
-    return res.status(401).json({
-      message: "Authorization token missing",
-    });
+  //----------------------------------------------------------------
+  // const token = req.headers.authorization; // Assuming the token is sent as "Bearer <token>"
+
+  // if (!token) {
+  //   return res.status(401).json({
+  //     message: "Authorization token missing",
+  //   });
+  // }
+  //----------------------------------------------------------------
+
+  const authHeader = req.headers.authorization;
+
+  // Check if the token exists and starts with 'Bearer'
+  if (!authHeader || !authHeader.startsWith('Bearer')) {
+    res.status(401).send("Authorization token is missing or malformed");
+    return;
   }
+
+  // Extract token by removing the 'Bearer ' part
+  const token = authHeader.split(' ')[1];
 
   try {
     // Verify the token and get user ID
@@ -58,13 +72,28 @@ export const postUserGameDataByGameName = async (
   res: Response
 ) => {
   const gameName = req.params.game_name; // Replace all hyphens with underscores
-  const token = req.headers.authorization; // Assuming the token is sent as "Bearer <token>"
 
-  if (!token) {
-    return res.status(401).json({
-      message: "Authorization token missing",
-    });
+  //----------------------------------------------------------------
+  // const token = req.headers.authorization; // Assuming the token is sent as "Bearer <token>"
+
+  // if (!token) {
+  //   return res.status(401).json({
+  //     message: "Authorization token missing",
+  //   });
+  // }
+  //----------------------------------------------------------------
+
+  const authHeader = req.headers.authorization;
+
+  // Check if the token exists and starts with 'Bearer'
+  if (!authHeader || !authHeader.startsWith('Bearer')) {
+    res.status(401).send("Authorization token is missing or malformed");
+    return;
   }
+
+  // Extract token by removing the 'Bearer ' part
+  const token = authHeader.split(' ')[1];
+
 
   try {
     // Verify the token and get user ID
@@ -79,11 +108,11 @@ export const postUserGameDataByGameName = async (
       .collection(collectionName)
       .where("user_id", "==", userId)
       .get();
-      const userData = req.body;
-      userData.user_id = userId;
+    const userData = req.body;
+    userData.user_id = userId;
     if (querySnapshot.empty) {
       // If no document exists, create a new one with the provided data
-      
+
       await db.collection(collectionName).add({ ...userData, user_id: userId });
     } else {
       // If a document exists, update the existing document with the provided data

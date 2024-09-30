@@ -8,8 +8,13 @@
     "strict": true,
     "baseUrl": "./",
     "paths": {
-      "*": ["node_modules/*", "src/types/*"]
+      "*": [
+        "node_modules/*",
+        "types/*"
+      ] // Adjusted if types are not in src
     }
   },
-  "include": ["src/**/*"]
+  "include": [
+    "**/*"
+  ], // Includes all files
 }

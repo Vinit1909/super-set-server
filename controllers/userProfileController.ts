@@ -15,14 +15,27 @@ export const getUserProfile = async (
   res: Response
 ): Promise<void> => {
   try {
-    const userToken = req.headers.authorization;
+    //----------------------------------------------------------------
+    // const userToken = req.headers.authorization;
 
-    if (!userToken) {
-      res.status(401).send("Authorization token is missing");
+    // if (!userToken) {
+    //   res.status(401).send("Authorization token is missing");
+    //   return;
+    // }
+    //----------------------------------------------------------------
+
+    const authHeader = req.headers.authorization;
+
+    // Check if the token exists and starts with 'Bearer'
+    if (!authHeader || !authHeader.startsWith('Bearer')) {
+      res.status(401).send("Authorization token is missing or malformed");
       return;
     }
 
-    const decodedToken = await admin.auth().verifyIdToken(userToken);
+    // Extract token by removing the 'Bearer ' part
+    const token = authHeader.split(' ')[1];
+
+    const decodedToken = await admin.auth().verifyIdToken(token);
     const email = decodedToken.email;
 
     if (!email) {
@@ -55,12 +68,25 @@ export const setUserProfile = async (
   res: Response
 ): Promise<void> => {
   try {
-    const token = req.headers.authorization;
+    //----------------------------------------------------------------
+    // const token = req.headers.authorization;
 
-    if (!token) {
-      res.status(401).send("Authorization token is missing");
+    // if (!token) {
+    //   res.status(401).send("Authorization token is missing");
+    //   return;
+    // }
+    //----------------------------------------------------------------
+
+    const authHeader = req.headers.authorization;
+
+    // Check if the token exists and starts with 'Bearer'
+    if (!authHeader || !authHeader.startsWith('Bearer')) {
+      res.status(401).send("Authorization token is missing or malformed");
       return;
     }
+
+    // Extract token by removing the 'Bearer ' part
+    const token = authHeader.split(' ')[1];
 
     const decodedToken = await admin.auth().verifyIdToken(token);
     const email = decodedToken.email;
